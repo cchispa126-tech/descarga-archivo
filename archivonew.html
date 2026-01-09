@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 SISTEMA VEHICULAR NFC INTELIGENTE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .badge {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-nfc {
+            background: #8e44ad;
+            color: white;
+        }
+        
+        .btn-file {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .nfc-status {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .instruction-box {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        
+        .data-display {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tag-info {
+            background: #e8f6f3;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background: #2ecc71;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-inactive {
+            background: #e74c3c;
+        }
+        
+        .status-ready {
+            background: #f39c12;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .chip {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 2px;
+            display: inline-block;
+        }
+        
+        @media (max-width: 600px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔑 SISTEMA VEHICULAR NFC INTELIGENTE</h1>
+            <p>Mantiene enlace + datos - No sobrescribe registros existentes</p>
+            <div class="badge">📲 SOLO ANDROID con CHROME 89+</div>
+        </div>
+        
+        <div class="content">
+            <!-- INSTRUCCIONES NFC -->
+            <div class="instruction-box">
+                <h3>⚠️ CONFIGURACIÓN INICIAL</h3>
+                <p><strong>1.</strong> Guarda este archivo en tu Android</p>
+                <p><strong>2.</strong> Ábrelo desde <strong>"Archivos" → "Abrir con Chrome"</strong></p>
+                <p><strong>3.</strong> Permite el acceso a NFC cuando Chrome lo solicite</p>
+                <p><strong>4.</strong> Toca "ACTIVAR NFC" abajo</p>
+                <p><strong>💡 CONSEJO:</strong> El NFC mantiene TODOS los datos existentes al escribir</p>
+            </div>
+            
+            <!-- DATOS DEL VEHÍCULO -->
+            <div class="panel">
+                <h2>📝 DATOS DEL VEHÍCULO</h2>
+                
+                <div class="form-group">
+                    <label>🚘 Matrícula:</label>
+                    <input type="text" id="matricula" placeholder="Ej: 1234 ABC" value="4567 XYZ">
+                </div>
+                
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>🛣️ Kilómetros:</label>
+                        <input type="number" id="kilometros" value="125430">
+                    </div>
+                    <div class="form-group">
+                        <label>⛽ Último repostaje:</label>
+                        <input type="number" step="0.1" id="litros" value="42.5" placeholder="Litros">
+                    </div>
+                    <div class="form-group">
+                        <label>💰 Coste/L:</label>
+                        <input type="number" step="0.01" id="precioLitro" value="1.65" placeholder="€/L">
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>✅ Próxima ITV:</label>
+                        <input type="date" id="itv" value="2024-12-15">
+                    </div>
+                    <div class="form-group">
+                        <label>🛡️ Vencimiento seguro:</label>
+                        <input type="date" id="seguro" value="2024-11-30">
+                    </div>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>🔄 Último cambio aceite:</label>
+                        <input type="number" id="kmAceite" value="122000" placeholder="km">
+                    </div>
+                    <div class="form-group">
+                        <label>⚙️ Próximo cambio:</label>
+                        <input type="number" id="proxAceite" value="132000" placeholder="km">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notas y observaciones:</label>
+                    <textarea id="notas" placeholder="Observaciones, recordatorios...">Cambio filtro próximo. Revisar frenos.</textarea>
+                </div>
+            </div>
+            
+            <!-- ESTADO NFC -->
+            <div class="panel">
+                <div class="nfc-status">
+                    <h3 id="nfcTitle">
+                        <span class="status-indicator" id="statusLed"></span>
+                        ESTADO NFC
+                    </h3>
+                    <p id="nfcStatus">Verificando compatibilidad...</p>
+                    <p id="nfcDetail"></p>
+                    <button class="btn btn-success" onclick="activarNFC()" style="margin-top: 10px;">
+                        🔓 ACTIVAR NFC
+                    </button>
+                </div>
+            </div>
+            
+            <!-- INFORMACIÓN DE LA ETIQUETA -->
+            <div class="panel" id="tagInfoPanel" style="display: none;">
+                <h2>📊 INFORMACIÓN DEL LLAVERO NFC</h2>
+                <div id="tagInfo" class="tag-info">
+                    <!-- Información dinámica aquí -->
+                </div>
+            </div>
+            
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="panel">
+                <h2>⚡ ACCIONES NFC INTELIGENTES</h2>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-nfc" onclick="escribirNFC()">
+                        💾 ESCRIBIR NFC
+                    </button>
+                    <button class="btn btn-nfc" onclick="leerNFC()">
+                        📖 LEER NFC
+                    </button>
+                    <button class="btn btn-info" onclick="diagnosticoNFC()">
+                        🔍 DIAGNÓSTICO
+                    </button>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-file" onclick="exportarJSON()">
+                        ⬇️ EXPORTAR JSON
+                    </button>
+                    <button class="btn btn-file" onclick="importarJSON()">
+                        ⬆️ IMPORTAR JSON
+                    </button>
+                    <button class="btn btn-warning" onclick="verHistorial()">
+                        📜 HISTORIAL
+                    </button>
+                    <button class="btn btn-danger" onclick="limpiarDatos()">
+                        🗑️ LIMPIAR
+                    </button>
+                </div>
+            </div>
+            
+            <!-- VISUALIZACIÓN DE DATOS -->
+            <div class="panel">
+                <h2>📊 DATOS ACTUALES</h2>
+                <div id="datosContainer" class="data-display">
+                    <!-- Los datos se muestran aquí -->
+                </div>
+                <div id="mensaje" style="margin-top: 10px; font-weight: bold; padding: 10px; border-radius: 5px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURACIÓN NFC ====================
+        
+        // Variables globales
+        let ndefReader = null;
+        let nfcActivo = false;
+        let historialOperaciones = [];
+        
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarApp();
+        });
+        
+        function inicializarApp() {
+            // 1. Cargar datos guardados
+            cargarDatosGuardados();
+            
+            // 2. Verificar NFC
+            verificarNFC();
+            
+            // 3. Mostrar datos
+            mostrarDatos();
+            
+            // 4. Configurar autoguardado
+            document.querySelectorAll('input, textarea').forEach(elemento => {
+                elemento.addEventListener('change', function() {
+                    guardarLocal();
+                    mostrarDatos();
+                });
+            });
+            
+            // 5. Cargar historial
+            cargarHistorial();
+        }
+        
+        // ==================== ACTUALIZAR ESTADO NFC ====================
+        
+        function actualizarEstadoNFC(estado, mensaje, detalle = "") {
+            const led = document.getElementById('statusLed');
+            const status = document.getElementById('nfcStatus');
+            const detail = document.getElementById('nfcDetail');
+            const title = document.getElementById('nfcTitle');
+            
+            // Actualizar LED
+            led.className = 'status-indicator';
+            switch(estado) {
+                case 'active':
+                    led.classList.add('status-active');
+                    title.innerHTML = '<span class="status-indicator status-active"></span> NFC ACTIVADO';
+                    break;
+                case 'inactive':
+                    led.classList.add('status-inactive');
+                    title.innerHTML = '<span class="status-indicator status-inactive"></span> NFC INACTIVO';
+                    break;
+                case 'ready':
+                    led.classList.add('status-ready');
+                    title.innerHTML = '<span class="status-indicator status-ready"></span> NFC LISTO';
+                    break;
+            }
+            
+            status.innerHTML = mensaje;
+            detail.innerHTML = detalle;
+        }
+        
+        // ==================== ACTIVAR NFC ====================
+        
+        async function activarNFC() {
+            mostrarMensaje("🔓 Activando NFC...", "info");
+            actualizarEstadoNFC('ready', "Solicitando permisos...");
+            
+            // Verificar que estamos en Android/Chrome
+            if (!esAndroidChrome()) {
+                mostrarMensaje("❌ Solo funciona en Android con Chrome 89+", "error");
+                actualizarEstadoNFC('inactive', "❌ No compatible", "Usa Android Chrome");
+                return;
+            }
+            
+            try {
+                // Crear NDEFReader - SOLICITA PERMISO
+                ndefReader = new NDEFReader();
+                
+                // Intentar hacer un scan - ESTE ES EL PASO QUE PIDE PERMISO
+                await ndefReader.scan();
+                
+                nfcActivo = true;
+                actualizarEstadoNFC('active', "✅ NFC ACTIVO", "Puedes leer/escribir etiquetas");
+                mostrarMensaje("✅ NFC activado correctamente", "success");
+                
+                // Añadir al historial
+                agregarHistorial("NFC Activado", "success");
+                
+            } catch (error) {
+                console.error("Error activando NFC:", error);
+                manejarErrorNFC(error);
+            }
+        }
+        
+        // ==================== ESCRIBIR NFC (INTELIGENTE) ====================
+        
+        async function escribirNFC() {
+            if (!nfcActivo) {
+                mostrarMensaje("⚠️ Primero activa NFC", "error");
+                return;
+            }
+            
+            try {
+                // 1. Obtener datos del formulario
+                const datos = obtenerDatosDelFormulario();
+                const jsonDatos = JSON.stringify(datos);
+                const enlaceActual = window.location.href;
+                
+                console.log("📝 Datos a guardar:", datos);
+                mostrarMensaje("🔍 Acerca el llavero NFC al teléfono...", "info");
+                
+                // 2. LEER PRIMERO los registros existentes
+                let registrosExistentes = [];
+                let tagInfo = "Nuevo tag";
+                
+                try {
+                    const lectura = await ndefReader.read();
+                    registrosExistentes = lectura.message.records;
+                    tagInfo = `Tag con ${registrosExistentes.length} registros`;
+                    
+                    console.log(`📚 ${registrosExistentes.length} registros existentes encontrados`);
+                    
+                    // Mostrar información del tag
+                    mostrarInfoTag(lectura);
+                    
+                } catch (e) {
+                    console.log("📭 NFC vacío o no se pudo leer:", e.message);
+                    mostrarMensaje("📭 NFC vacío, creando nuevo tag...", "info");
+                    tagInfo = "Tag vacío - Nuevo";
+                }
+                
+                // 3. PREPARAR NUEVOS REGISTROS
+                const nuevosRegistros = [];
+                let jsonEncontrado = false;
+                let enlaceEncontrado = false;
+                
+                // Procesar registros existentes
+                registrosExistentes.forEach(registro => {
+                    if (registro.recordType === "mime" && registro.mediaType === "application/json") {
+                        // Reemplazar JSON antiguo por nuevo
+                        nuevosRegistros.push({
+                            recordType: "mime",
+                            mediaType: "application/json",
+                            data: new TextEncoder().encode(jsonDatos)
+                        });
+                        jsonEncontrado = true;
+                        console.log("✅ Reemplazando JSON antiguo");
+                        
+                    } else if (registro.recordType === "url") {
+                        // Mantener el enlace que ya está (o actualizar si es diferente)
+                        const urlExistente = new TextDecoder().decode(registro.data);
+                        if (urlExistente !== enlaceActual) {
+                            console.log(`🔄 Actualizando enlace: ${urlExistente.substring(0, 50)}... → ${enlaceActual.substring(0, 50)}...`);
+                            nuevosRegistros.push({
+                                recordType: "url",
+                                data: enlaceActual
+                            });
+                        } else {
+                            // Mantener el mismo enlace
+                            nuevosRegistros.push(registro);
+                            console.log("🔗 Manteniendo enlace existente");
+                        }
+                        enlaceEncontrado = true;
+                        
+                    } else {
+                        // Mantener otros tipos de registros
+                        nuevosRegistros.push(registro);
+                        console.log(`📦 Manteniendo registro: ${registro.recordType}`);
+                    }
+                });
+                
+                // 4. AÑADIR LO QUE FALTA
+                if (!jsonEncontrado) {
+                    nuevosRegistros.push({
+                        recordType: "mime",
+                        mediaType: "application/json",
+                        data: new TextEncoder().encode(jsonDatos)
+                    });
+                    console.log("➕ Añadiendo nuevo registro JSON");
+                }
+                
+                if (!enlaceEncontrado) {
+                    nuevosRegistros.unshift({  // Añadir al inicio
+                        recordType: "url",
+                        data: enlaceActual
+                    });
+                    console.log("🔗 Añadiendo nuevo enlace");
+                }
+                
+                // 5. ORDENAR: URLs primero, luego datos
+                const registrosOrdenados = [];
+                
+                // Primero todos los URLs
+                nuevosRegistros.forEach(registro => {
+                    if (registro.recordType === "url") {
+                        registrosOrdenados.push(registro);
+                    }
+                });
+                
+                // Luego JSONs
+                nuevosRegistros.forEach(registro => {
+                    if (registro.recordType === "mime" && registro.mediaType === "application/json") {
+                        registrosOrdenados.push(registro);
+                    }
+                });
+                
+                // Finalmente otros registros
+                nuevosRegistros.forEach(registro => {
+                    if (registro.recordType !== "url" && !(registro.recordType === "mime" && registro.mediaType === "application/json")) {
+                        registrosOrdenados.push(registro);
+                    }
+                });
+                
+                // 6. ESCRIBIR TODO JUNTO
+                console.log(`📝 Escribiendo ${registrosOrdenados.length} registros`);
+                
+                await ndefReader.write({
+                    records: registrosOrdenados
+                });
+                
+                // 7. CONFIRMACIÓN Y REGISTRO
+                const enlaces = registrosOrdenados.filter(r => r.recordType === "url").length;
+                const jsons = registrosOrdenados.filter(r => r.recordType === "mime" && r.mediaType === "application/json").length;
+                const otros = registrosOrdenados.length - enlaces - jsons;
+                
+                mostrarMensaje(
+                    `✅ NFC actualizado: ${enlaces} enlace(s), ${jsons} JSON, ${otros} otros`, 
+                    "success"
+                );
+                
+                // Añadir al historial
+                agregarHistorial(
+                    `Escritura NFC: ${enlaces}🔗 ${jsons}📊 ${otros}📦`,
+                    "write"
+                );
+                
+                // Mostrar resumen detallado
+                setTimeout(() => {
+                    const resumen = `📊 NFC ACTUALIZADO:\n\n` +
+                                  `• Total registros: ${registrosOrdenados.length}\n` +
+                                  `• Enlaces de apertura: ${enlaces}\n` +
+                                  `• Datos JSON: ${jsons}\n` +
+                                  `• Otros datos: ${otros}\n` +
+                                  `• Estado anterior: ${tagInfo}\n\n` +
+                                  `⚠️ El NFC mantiene TODOS los datos previos`;
+                    
+                    if (registrosOrdenados.length > 2) {
+                        alert(resumen);
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error("❌ Error escribiendo NFC:", error);
+                manejarErrorEscritura(error);
+            }
+        }
+        
+        // ==================== LEER NFC ====================
+        
+        async function leerNFC() {
+            if (!nfcActivo) {
+                mostrarMensaje("⚠️ Primero activa NFC", "error");
+                return;
+            }
+            
+            try {
+                mostrarMensaje("🔍 Acerca un llavero NFC con datos...", "info");
+                
+                // Configurar timeout
+                const timeout = setTimeout(() => {
+                    mostrarMensaje("⏱️ Acerca el NFC más tiempo", "info");
+                }, 5000);
+                
+                // Leer una sola vez
+                const lectura = await ndefReader.read();
+                clearTimeout(timeout);
+                
+                // Procesar lectura
+                procesarLecturaCompleta(lectura);
+                
+                // Añadir al historial
+                agregarHistorial("Lectura NFC completada", "read");
+                
+            } catch (error) {
+                console.error("Error leyendo NFC:", error);
+                mostrarMensaje("❌ Error: " + error.message, "error");
+            }
+        }
+        
+        function procesarLecturaCompleta(lectura) {
+            const registros = lectura.message.records;
+            let datosVehiculo = null;
+            let enlaces = [];
+            let otrosDatos = [];
+            
+            console.log(`📖 ${registros.length} registros encontrados`);
+            
+            // Analizar cada registro
+            registros.forEach((registro, index) => {
+                try {
+                    if (registro.recordType === "url") {
+                        const url = new TextDecoder().decode(registro.data);
+                        enlaces.push(url);
+                        console.log(`🔗 [${index}] URL: ${url}`);
+                        
+                    } else if (registro.recordType === "mime" && registro.mediaType === "application/json") {
+                        const jsonStr = new TextDecoder().decode(registro.data);
+                        try {
+                            datosVehiculo = JSON.parse(jsonStr);
+                            console.log(`📊 [${index}] JSON: ${Object.keys(datosVehiculo).length} campos`);
+                        } catch (e) {
+                            console.log(`❓ [${index}] JSON inválido`);
+                        }
+                        
+                    } else if (registro.recordType === "text") {
+                        const texto = new TextDecoder().decode(registro.data);
+                        otrosDatos.push({ tipo: "texto", valor: texto });
+                        console.log(`📝 [${index}] Texto: ${texto.substring(0, 50)}...`);
+                        
+                    } else {
+                        console.log(`📦 [${index}] Tipo: ${registro.recordType}, MIME: ${registro.mediaType || 'N/A'}`);
+                        otrosDatos.push({ 
+                            tipo: registro.recordType, 
+                            mime: registro.mediaType 
+                        });
+                    }
+                } catch (e) {
+                    console.log(`❓ [${index}] Error procesando registro`);
+                }
+            });
+            
+            // Mostrar información del tag
+            mostrarInfoTag(lectura);
+            
+            // Mostrar resumen
+            let mensajeResumen = `📊 NFC con ${registros.length} registros: `;
+            if (enlaces.length > 0) mensajeResumen += `🔗${enlaces.length} `;
+            if (datosVehiculo) mensajeResumen += `📊1 `;
+            if (otrosDatos.length > 0) mensajeResumen += `📦${otrosDatos.length}`;
+            
+            mostrarMensaje(mensajeResumen, "info");
+            
+            // Cargar datos del vehículo si existen
+            if (datosVehiculo) {
+                cargarDatosEnFormulario(datosVehiculo);
+                guardarLocal();
+                mostrarDatos();
+                mostrarMensaje("✅ Datos del vehículo cargados!", "success");
+                
+                // Mostrar resumen de datos cargados
+                setTimeout(() => {
+                    const cambios = contarCambios(datosVehiculo);
+                    if (cambios > 0) {
+                        mostrarMensaje(`🔄 ${cambios} campos actualizados`, "info");
+                    }
+                }, 300);
+            }
+            
+            // Mostrar enlaces si existen
+            if (enlaces.length > 0) {
+                setTimeout(() => {
+                    const mensajeEnlaces = enlaces.length === 1 ? 
+                        `Este NFC abre la aplicación web.\n\n${enlaces[0].substring(0, 60)}...` :
+                        `Este NFC tiene ${enlaces.length} enlaces.`;
+                    
+                    if (confirm(`${mensajeEnlaces}\n\n¿Abrir la aplicación ahora?`)) {
+                        window.open(enlaces[0], '_blank');
+                    }
+                }, 800);
+            }
+        }
+        
+        // ==================== DIAGNÓSTICO NFC ====================
+        
+        async function diagnosticoNFC() {
+            if (!nfcActivo) {
+                mostrarMensaje("⚠️ Activa NFC primero", "error");
+                return;
+            }
+            
+            try {
+                mostrarMensaje("🔍 Analizando NFC...", "info");
+                const lectura = await ndefReader.read();
+                
+                let reporte = `=== DIAGNÓSTICO COMPLETO NFC ===\n\n`;
+                reporte += `📊 TOTAL REGISTROS: ${lectura.message.records.length}\n`;
+                reporte += `📱 CAPACIDAD: ${calcularTamaño(lectura)} bytes aprox.\n\n`;
+                
+                let contador = {
+                    urls: 0,
+                    jsons: 0,
+                    textos: 0,
+                    otros: 0
+                };
+                
+                lectura.message.records.forEach((registro, index) => {
+                    reporte += `[REGISTRO ${index}]\n`;
+                    reporte += `├ Tipo: ${registro.recordType}\n`;
+                    
+                    if (registro.mediaType) {
+                        reporte += `├ MIME: ${registro.mediaType}\n`;
+                    }
+                    
+                    try {
+                        const data = new TextDecoder().decode(registro.data);
+                        if (registro.recordType === "url") {
+                            reporte += `├ URL: ${data}\n`;
+                            contador.urls++;
+                        } else if (registro.recordType === "text") {
+                            reporte += `├ Texto (${data.length} chars)\n`;
+                            contador.textos++;
+                        } else if (registro.recordType === "mime" && registro.mediaType === "application/json") {
+                            reporte += `├ JSON (${data.length} chars)\n`;
+                            contador.jsons++;
+                        } else {
+                            reporte += `├ Datos (${data.length} chars)\n`;
+                            contador.otros++;
+                        }
+                        
+                        if (data.length < 80) {
+                            reporte += `└ Contenido: ${data}\n`;
+                        }
+                    } catch (e) {
+                        reporte += `└ Datos binarios: ${registro.data.byteLength} bytes\n`;
+                        contador.otros++;
+                    }
+                    
+                    reporte += `\n`;
+                });
+                
+                reporte += `=== RESUMEN ===\n`;
+                reporte += `🔗 URLs: ${contador.urls}\n`;
+                reporte += `📊 JSONs: ${contador.jsons}\n`;
+                reporte += `📝 Textos: ${contador.textos}\n`;
+                reporte += `📦 Otros: ${contador.otros}\n`;
+                reporte += `📈 Total: ${contador.urls + contador.jsons + contador.textos + contador.otros}\n`;
+                
+                console.log(reporte);
+                
+                // Mostrar en alerta formateada
+                const reporteCorto = `📊 DIAGNÓSTICO NFC:\n\n` +
+                                   `Registros: ${lectura.message.records.length}\n` +
+                                   `URLs: ${contador.urls}\n` +
+                                   `JSONs: ${contador.jsons}\n` +
+                                   `Textos: ${contador.textos}\n` +
+                                   `Otros: ${contador.otros}\n\n` +
+                                   `(Ver consola para detalles completos)`;
+                
+                alert(reporteCorto);
+                
+                // Añadir al historial
+                agregarHistorial("Diagnóstico NFC ejecutado", "diagnostic");
+                
+            } catch (error) {
+                mostrarMensaje("❌ Error en diagnóstico: " + error.message, "error");
+            }
+        }
+        
+        // ==================== FUNCIONES AUXILIARES NFC ====================
+        
+        function mostrarInfoTag(lectura) {
+            const panel = document.getElementById('tagInfoPanel');
+            const infoDiv = document.getElementById('tagInfo');
+            
+            const registros = lectura.message.records;
+            const enlaces = registros.filter(r => r.recordType === "url").length;
+            const jsons = registros.filter(r => r.recordType === "mime" && r.mediaType === "application/json").length;
+            const textos = registros.filter(r => r.recordType === "text").length;
+            const otros = registros.length - enlaces - jsons - textos;
+            
+            let infoHTML = `<div class="data-item"><span>📊 Total registros:</span><span><strong>${registros.length}</strong></span></div>`;
+            
+            if (enlaces > 0) {
+                infoHTML += `<div class="data-item"><span>🔗 Enlaces:</span><span><span class="chip">${enlaces}</span></span></div>`;
+            }
+            
+            if (jsons > 0) {
+                infoHTML += `<div class="data-item"><span>📊 Datos JSON:</span><span><span class="chip">${jsons}</span></span></div>`;
+            }
+            
+            if (textos > 0) {
+                infoHTML += `<div class="data-item"><span>📝 Textos:</span><span><span class="chip">${textos}</span></span></div>`;
+            }
+            
+            if (otros > 0) {
+                infoHTML += `<div class="data-item"><span>📦 Otros:</span><span><span class="chip">${otros}</span></span></div>`;
+            }
+            
+            // Calcular tamaño aproximado
+            let tamañoTotal = 0;
+            registros.forEach(registro => {
+                tamañoTotal += registro.data ? registro.data.byteLength : 0;
+            });
+            
+            infoHTML += `<div class="data-item"><span>💾 Tamaño aprox.:</span><span>${tamañoTotal} bytes</span></div>`;
+            
+            infoDiv.innerHTML = infoHTML;
+            panel.style.display = 'block';
+        }
+        
+        function calcularTamaño(lectura) {
+            let tamaño = 0;
+            lectura.message.records.forEach(registro => {
+                tamaño += registro.data ? registro.data.byteLength : 0;
+            });
+            return tamaño;
+        }
+        
+        function verificarNFC() {
+            if (!('NDEFReader' in window)) {
+                actualizarEstadoNFC('inactive', "❌ NFC NO DISPONIBLE", "Solo Android Chrome 89+");
+                mostrarMensaje("Tu navegador no soporta Web NFC API", "error");
+                nfcActivo = false;
+                return;
+            }
+            
+            actualizarEstadoNFC('ready', "📱 NFC DISPONIBLE", "Toca 'ACTIVAR NFC' para usar");
+        }
+        
+        function esAndroidChrome() {
+            const ua = navigator.userAgent;
+            return /android/i.test(ua) && /chrome/i.test(ua);
+        }
+        
+        function manejarErrorNFC(error) {
+            let mensaje = "❌ Error NFC: ";
+            
+            switch(error.name) {
+                case 'NotAllowedError':
+                    mensaje += "Permiso denegado. Abre desde 'Archivos → Chrome'";
+                    break;
+                case 'NotSupportedError':
+                    mensaje += "NFC no soportado en este dispositivo";
+                    break;
+                case 'NotReadableError':
+                    mensaje += "No se puede acceder al lector NFC";
+                    break;
+                default:
+                    mensaje += error.message;
+            }
+            
+            mostrarMensaje(mensaje, "error");
+            actualizarEstadoNFC('inactive', "❌ ERROR NFC", error.name);
+        }
+        
+        function manejarErrorEscritura(error) {
+            if (error.name === 'NotAllowedError') {
+                mostrarMensaje("🔒 Permiso denegado. Mantén el teléfono cerca del NFC", "error");
+            } else if (error.name === 'InvalidStateError') {
+                mostrarMensaje("📱 NFC no disponible. Re-activa NFC", "error");
+            } else if (error.message.includes('read-only')) {
+                mostrarMensaje("🔒 NFC es de solo lectura", "error");
+            } else {
+                mostrarMensaje("❌ Error: " + error.message, "error");
+            }
+        }
+        
+        function contarCambios(nuevosDatos) {
+            const viejosDatos = obtenerDatosDelFormulario();
+            let cambios = 0;
+            
+            for (const key in nuevosDatos) {
+                if (nuevosDatos[key] !== viejosDatos[key]) {
+                    cambios++;
+                }
+            }
+            
+            return cambios;
+        }
+        
+        // ==================== FUNCIONES DE DATOS ====================
+        
+        function obtenerDatosDelFormulario() {
+            return {
+                matricula: document.getElementById('matricula').value.trim(),
+                kilometros: parseInt(document.getElementById('kilometros').value) || 0,
+                litros: parseFloat(document.getElementById('litros').value) || 0,
+                precioLitro: parseFloat(document.getElementById('precioLitro').value) || 0,
+                itv: document.getElementById('itv').value,
+                seguro: document.getElementById('seguro').value,
+                kmAceite: parseInt(document.getElementById('kmAceite').value) || 0,
+                proxAceite: parseInt(document.getElementById('proxAceite').value) || 0,
+                notas: document.getElementById('notas').value,
+                fechaActualizacion: new Date().toISOString(),
+                version: "1.0"
+            };
+        }
+        
+        function cargarDatosEnFormulario(datos) {
+            document.getElementById('matricula').value = datos.matricula || '';
+            document.getElementById('kilometros').value = datos.kilometros || '';
+            document.getElementById('litros').value = datos.litros || '';
+            document.getElementById('precioLitro').value = datos.precioLitro || '';
+            document.getElementById('itv').value = datos.itv || '';
+            document.getElementById('seguro').value = datos.seguro || '';
+            document.getElementById('kmAceite').value = datos.kmAceite || '';
+            document.getElementById('proxAceite').value = datos.proxAceite || '';
+            document.getElementById('notas').value = datos.notas || '';
+        }
+        
+        function guardarLocal() {
+            const datos = obtenerDatosDelFormulario();
+            localStorage.setItem('vehiculoData', JSON.stringify(datos));
+        }
+        
+        function cargarDatosGuardados() {
+            try {
+                const datos = localStorage.getItem('vehiculoData');
+                if (datos) {
+                    cargarDatosEnFormulario(JSON.parse(datos));
+                }
+            } catch (e) {
+                console.log("No hay datos guardados");
+            }
+        }
+        
+        function mostrarDatos() {
+            const datos = obtenerDatosDelFormulario();
+            const container = document.getElementById('datosContainer');
+            
+            let html = `
+                <div class="data-item">
+                    <span>🚘 Matrícula:</span>
+                    <span><strong>${datos.matricula || 'No definida'}</strong></span>
+                </div>
+                <div class="data-item">
+                    <span>🛣️ Kilómetros:</span>
+                    <span>${parseInt(datos.kilometros).toLocaleString('es')} km</span>
+                </div>
+            `;
+            
+            if (datos.litros > 0) {
+                const costeTotal = datos.litros * datos.precioLitro;
+                html += `
+                    <div class="data-item">
+                        <span>⛽ Último repostaje:</span>
+                        <span>${datos.litros} L × ${datos.precioLitro.toFixed(2)}€ = ${costeTotal.toFixed(2)}€</span>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div class="data-item">
+                    <span>✅ Próxima ITV:</span>
+                    <span>${datos.itv ? formatFecha(datos.itv) : 'No definida'}</span>
+                </div>
+                <div class="data-item">
+                    <span>🛡️ Vencimiento seguro:</span>
+                    <span>${datos.seguro ? formatFecha(datos.seguro) : 'No definida'}</span>
+                </div>
+            `;
+            
+            if (datos.kmAceite > 0) {
+                const kmRestantes = datos.proxAceite - datos.kilometros;
+                html += `
+                    <div class="data-item">
+                        <span>🔄 Cambio aceite:</span>
+                        <span>${datos.kmAceite.toLocaleString('es')} km</span>
+                    </div>
+                    <div class="data-item">
+                        <span>⚙️ Próximo cambio:</span>
+                        <span>${datos.proxAceite.toLocaleString('es')} km (${kmRestantes > 0 ? kmRestantes.toLocaleString('es') + ' km restantes' : '¡VENCIDO!'})</span>
+                    </div>
+                `;
+            }
+            
+            if (datos.notas) {
+                html += `
+                    <div class="data-item">
+                        <span>📝 Notas:</span>
+                        <span>${datos.notas.substring(0, 40)}${datos.notas.length > 40 ? '...' : ''}</span>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function formatFecha(fechaStr) {
+            if (!fechaStr) return '';
+            const fecha = new Date(fechaStr);
+            return fecha.toLocaleDateString('es-ES');
+        }
+        
+        // ==================== HISTORIAL ====================
+        
+        function agregarHistorial(accion, tipo) {
+            const entrada = {
+                fecha: new Date().toISOString(),
+                accion: accion,
+                tipo: tipo,
+                datos: obtenerDatosDelFormulario()
+            };
+            
+            historialOperaciones.unshift(entrada); // Añadir al inicio
+            
+            // Mantener solo las últimas 50 entradas
+            if (historialOperaciones.length > 50) {
+                historialOperaciones.pop();
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('vehiculoHistorial', JSON.stringify(historialOperaciones));
+        }
+        
+        function cargarHistorial() {
+            try {
+                const historial = localStorage.getItem('vehiculoHistorial');
+                if (historial) {
+                    historialOperaciones = JSON.parse(historial);
+                }
+            } catch (e) {
+                historialOperaciones = [];
+            }
+        }
+        
+        function verHistorial() {
+            if (historialOperaciones.length === 0) {
+                alert("📜 No hay historial de operaciones");
+                return;
+            }
+            
+            let reporte = "=== HISTORIAL DE OPERACIONES ===\n\n";
+            
+            historialOperaciones.forEach((entrada, index) => {
+                const fecha = new Date(entrada.fecha);
+                const icono = entrada.tipo === 'write' ? '💾' : 
+                            entrada.tipo === 'read' ? '📖' :
+                            entrada.tipo === 'diagnostic' ? '🔍' : '✅';
+                
+                reporte += `${icono} ${fecha.toLocaleString('es-ES')}\n`;
+                reporte += `   ${entrada.accion}\n`;
+                
+                if (entrada.datos && entrada.datos.matricula) {
+                    reporte += `   Vehículo: ${entrada.datos.matricula}\n`;
+                }
+                
+                reporte += `\n`;
+            });
+            
+            alert(reporte.substring(0, 2000) + (reporte.length > 2000 ? "\n\n... (más en consola)" : ""));
+            console.log("Historial completo:", historialOperaciones);
+        }
+        
+        // ==================== IMPORTAR/EXPORTAR JSON ====================
+        
+        function exportarJSON() {
+            const datos = obtenerDatosDelFormulario();
+            datos.exportacion = new Date().toISOString();
+            datos.aplicacion = "Sistema Vehicular NFC";
+            
+            const jsonStr = JSON.stringify(datos, null, 2);
+            const blob = new Blob([jsonStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vehiculo_${datos.matricula || 'datos'}_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            mostrarMensaje("💾 JSON exportado", "success");
+            agregarHistorial("Exportación JSON", "export");
+        }
+        
+        function importarJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const datos = JSON.parse(e.target.result);
+                        cargarDatosEnFormulario(datos);
+                        guardarLocal();
+                        mostrarDatos();
+                        mostrarMensaje("✅ JSON importado correctamente", "success");
+                        agregarHistorial("Importación JSON", "import");
+                    } catch (error) {
+                        mostrarMensaje("❌ Error importando JSON", "error");
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function limpiarDatos() {
+            if (confirm("¿Estás seguro de limpiar TODOS los datos del formulario?\n\nEsto no afecta a los datos en el NFC.")) {
+                document.getElementById('matricula').value = '';
+                document.getElementById('kilometros').value = '';
+                document.getElementById('litros').value = '';
+                document.getElementById('precioLitro').value = '';
+                document.getElementById('itv').value = '';
+                document.getElementById('seguro').value = '';
+                document.getElementById('kmAceite').value = '';
+                document.getElementById('proxAceite').value = '';
+                document.getElementById('notas').value = '';
+                localStorage.removeItem('vehiculoData');
+                mostrarDatos();
+                mostrarMensaje("🗑️ Formulario limpiado", "info");
+                agregarHistorial("Limpieza de formulario", "clear");
+            }
+        }
+        
+        // ==================== MENSAJES ====================
+        
+        function mostrarMensaje(texto, tipo) {
+            const mensajeDiv = document.getElementById('mensaje');
+            mensajeDiv.innerHTML = texto;
+            
+            switch(tipo) {
+                case 'error':
+                    mensajeDiv.style.backgroundColor = '#fdecea';
+                    mensajeDiv.style.color = '#c62828';
+                    mensajeDiv.style.border = '2px solid #ef9a9a';
+                    break;
+                case 'success':
+                    mensajeDiv.style.backgroundColor = '#e8f5e9';
+                    mensajeDiv.style.color = '#2e7d32';
+                    mensajeDiv.style.border = '2px solid #a5d6a7';
+                    break;
+                case 'info':
+                    mensajeDiv.style.backgroundColor = '#e3f2fd';
+                    mensajeDiv.style.color = '#1565c0';
+                    mensajeDiv.style.border = '2px solid #90caf9';
+                    break;
+                default:
+                    mensajeDiv.style.backgroundColor = '#fff3e0';
+                    mensajeDiv.style.color = '#ef6c00';
+                    mensajeDiv.style.border = '2px solid #ffcc80';
+            }
+            
+            setTimeout(() => {
+                mensajeDiv.innerHTML = '';
+                mensajeDiv.style.backgroundColor = '';
+                mensajeDiv.style.border = '';
+            }, 5000);
+        }
+        
+        // ==================== INICIALIZACIÓN ====================
+        
+        // Mostrar versión
+        console.log("🚗 Sistema Vehicular NFC v2.0 - Inteligente");
+        console.log("📱 Mantiene todos los registros existentes");
+        console.log("🔗 Preserva enlaces y añade nuevos datos");
+    </script>
+</body>
+</html>
